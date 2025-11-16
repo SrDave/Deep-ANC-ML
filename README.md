@@ -23,6 +23,58 @@ El sistema simula una sala acústica con **Pyroomacoustics**, genera las **Respu
 
 ---
 
+## No linealidades en el sistema ANC
+
+Se pueden introducir no linealidades en diferentes partes del sistema:
+
+- **Camino primario:** respecto de la señal de referencia
+- **Señal de referencia:** ruido que llega al punto de control
+- **Camino secundario:** en la generación de la señal por el altavoz
+- Combinaciones de los anteriores
+
+### Modelos de no linealidad implementados
+
+1. **Modelo polinómico:**
+   $$x^{nl} (n) = 2a x(n) + ax^2(n) + x^3(n), \quad a = \log(\epsilon/10)+0.1, \epsilon = [2,3,4,5]$$
+2. **Exponencial:** 
+   $$x^{nl}(n) = 1 - e^{-0.3x(n)}$$
+3. **Saturación hard:** valores limitados entre \(-x_{\max}\) y \(x_{\max}\)  
+4. **Saturación soft:** 
+   $$x^{nl}(n)=\frac{x(n)x_{max}}{\sqrt[q]{|x_{max}|^q+|x(n)|^q}}$$
+5. **Sigmoide:**
+   $$x^{nl}(k)=\lambda\left(\frac{1}{1+e^{-vz(n)}}-\frac{1}{2} \right), \quad z(n)=1.5x(n)-0.3x^2(n)$$
+6. **Kernel Volterra segundo orden:**
+   $$x^{nl}(n) = h_0 + \sum_k h_1(k)x(n-k) + \sum_{k_1,k_2} h_2(k_1,k_2)x(n-k_1)x(n-k_2)$$
+
+> Los modelos 1–5 son sin memoria; el Volterra (6) incluye memoria.
+
+---
+
+### Implementación en Python / TensorFlow
+
+```python
+from tensorflow.keras.layers import Layer, Conv1D, Activation, Concatenate, Dense, Input
+import tensorflow as tf
+import numpy as np
+
+# Función de no linealidad
+def no_linealidad_tf(x, tipo=0):
+    x = tf.cast(x, tf.float32)
+    if tipo==1: a = tf.math.log(2.0 / 10)/tf.math.log(10) + 0.1; return 2*a*x + a*x**2 + x**3
+    elif tipo==2: return 1 - tf.exp(-0.3*x)
+    elif tipo==3: return tf.clip_by_value(x, -0.7, 0.7)
+    elif tipo==4:
+        max_x = tf.reduce_max(x)
+        return x*max_x/(tf.pow(tf.abs(max_x),2)+tf.pow(tf.abs(x),2))**0.5
+    elif tipo==5:
+        z = 1.5*x-0.3*x**2
+        v = tf.where(z>0, 4.0, 0.5)
+        return 4*(1/(1+tf.exp(-v*z))-0.5)
+    else: return x
+```
+
+---
+
 ## Estructura del proyecto
 
 - **Simulación acústica:** creación del entorno y obtención de RIRs  
