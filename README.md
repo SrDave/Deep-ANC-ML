@@ -95,24 +95,22 @@ pip install numpy matplotlib scipy tensorflow scikit-learn pyroomacoustics
 
 ## Ejecución básica
 
-### 1️⃣ Clona el repositorio
-```
-git clone https://github.com/tuusuario/Deep-ANC-ML.git
-cd Deep-ANC-ML
-```
+Este repositorio incluye dos cuadernos Jupyter donde puedes seguir paso a paso los procesos, simulaciones y entrenamiento (celda a celda), con explicaciones y gráficos intermedios:
+ 
+- **Copia_de_ANC_No_lineal.ipynb** — Versión con modelos no lineales y ejemplos de simulación.
 
- ### 2️⃣ Ejecuta el script principal
-```
-python deep_anc.py
-```
+Además, el repositorio contiene notebooks auxiliares y recursos para reproducir las pruebas y visualizar resultados:
 
-### 3️⃣ Visualiza los resultados
+- **Sala_ANC_ML (sin no-linealidades, explicado).ipynb** — Genera las RIRs con Pyroomacoustics y explica la simulación de sala.  
+- **resultadocancelacion.png** — Figura de ejemplo comparando antes/después de la cancelación.  
+- **rirmatlab.mat** — RIRs generadas en MATLAB (opcional para comparar con Pyroomacoustics).
 
-- RIRs generadas (camino primario y secundario)
+### Recomendación de lectura
 
-- Filtros aprendidos por ML
+Para comprender correctamente el flujo de trabajo, abre los notebooks en este orden:
 
-- Comparativa de señales antes y después de la cancelación
+1. **Sala_ANC_ML (sin no-linealidades, explicado).ipynb**    
+2. **Copia_de_ANC_No_lineal.ipynb**
 
 
 ---
