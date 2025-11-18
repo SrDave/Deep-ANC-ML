@@ -147,6 +147,6 @@ python deep_anc.py
 
 David Ramos
 
-Grado en Tecnologías Interactivas y de Diseño de Medios (GTDM)
+Grado en Tecnología Digital y Multimedia (GTDM)
 
 Universitat Politècnica de València (UPV)
